@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>socket demo</title>
+    <script src="./js/socket.js"></script>
+</head>
+<body>
+    <h1>socket demo</h1>
+    <button onclick="change_topic('topic_prices')">topic_prices</button>
+    <button onclick="change_topic('topic_tick')">topic_tick</button>
+    <button onclick="change_topic('topic_snapshot')">topic_snapshot</button>
+
+    <div id="#container"></div>
+
+<script>
+        const socket = io('wss://onli-quotation.btcdo.com', {
+            path: '/v1/market',
+            transports: ['websocket']
+        });
+        socket.on('connect', function(){
+            console.log('连接成功');
+        });
+        // 订阅成功
+        socket.emit('unsubscribe', {symbol: 'BDB_ETH'});
+        socket.emit('subscribe', {symbol: 'BDB_ETH'});
+        socket.on('disconnect', function(){
+            console.log('关闭连接');
+        });
+        function change_topic(type){
+            socket.emit('unsubscribe', {symbol: 'BDB_ETH'});
+            socket.emit('subscribe', {symbol: 'BDB_ETH'});
+            socket.on(type, function (data) {
+                console.log(data);
+            });
+        }
+
+</script>
+
+</body>
+</html>
